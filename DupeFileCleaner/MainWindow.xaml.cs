@@ -7,13 +7,11 @@ using System.Windows.Media;
 
 namespace DupeFileCleaner
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         IDictionary<string, List<string>> hashedFiles = new Dictionary<string, List<string>>();
-        
+
+        int fileCt = 0;
         int dirScannedCt = 0;
         int filesScannedCt = 0;
         int dupsFoundCt = 0;
@@ -27,6 +25,7 @@ namespace DupeFileCleaner
         private void Initialize()
         {
             hashedFiles.Clear();
+            fileCt = 0;
             dirScannedCt = 0;
             filesScannedCt = 0;
             dupsFoundCt = 0;
@@ -57,16 +56,51 @@ namespace DupeFileCleaner
             backgroundWorker.WorkerReportsProgress = true;
             backgroundWorker.WorkerSupportsCancellation = true;
             backgroundWorker.DoWork += Worker_Scan;
-            backgroundWorker.ProgressChanged += UpdateUI;
+            backgroundWorker.ProgressChanged += Worker_ProgressChange;
             backgroundWorker.RunWorkerCompleted += ScanComplete;
             backgroundWorker.RunWorkerAsync(argument: txtSelectedFolder.Text);
         }
 
         private void Worker_Scan(object sender, DoWorkEventArgs e)
         {
-            ScanDirectory((string)e.Argument);
+            string path = (string)e.Argument;
+            GetFileCount(path);
+            ScanDirectory(path, sender);
         }
-        private void ScanDirectory(string path)
+
+        private void GetFileCount(string path)
+        {
+            if(Directory.Exists(path))
+            {
+                try
+                {
+                    fileCt += Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories).Count();
+                }
+                catch
+                {
+                    GetFileCountPerDirectory(path);
+                }
+            }
+        }
+
+        private void GetFileCountPerDirectory(string path)
+        {
+            if(Directory.Exists(path))
+            {
+                try
+                {
+                    string[] dirs = Directory.GetDirectories(path);
+                    fileCt += Directory.EnumerateFiles(path).Count();
+
+                    foreach (string dir in dirs)
+                    {
+                        GetFileCount(dir);
+                    }
+                }
+                catch { }
+            }
+        }
+        private void ScanDirectory(string path, object sender)
         {
             if (path != String.Empty && Directory.Exists(path))
             {
@@ -99,6 +133,8 @@ namespace DupeFileCleaner
 
                             filesScannedCt++;
                             this.Dispatcher.Invoke(new Action(() => { lblFilesScannedCt.Content = filesScannedCt.ToString(); }));
+                            double prcComplete = (double)filesScannedCt / (double)fileCt * 100;
+                            (sender as BackgroundWorker).ReportProgress((int)prcComplete);
                         }
                     }
 
@@ -106,7 +142,7 @@ namespace DupeFileCleaner
                     {
                         foreach (string dir in foundDirs)
                         {
-                            ScanDirectory(dir);
+                            ScanDirectory(dir, sender);
                         }
                     }
                 }
@@ -121,10 +157,6 @@ namespace DupeFileCleaner
             }
         }
 
-        private void UpdateUI(object sender, ProgressChangedEventArgs e)
-        {
-            prgbrScan.Value = e.ProgressPercentage;
-        }
         private string GetFileHash(string path)
         {
             string hash = String.Empty;
@@ -165,6 +197,11 @@ namespace DupeFileCleaner
         {
             Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Normal, new MethodInvoker(action,  ));
         }*/
+        private void Worker_ProgressChange(object sender, ProgressChangedEventArgs e)
+        {
+            prgbrScan.Value = e.ProgressPercentage;
+        }
+
         private void ScanComplete(object sender, RunWorkerCompletedEventArgs e)
         {
             lblStatus.Content = "Scan Complete!";

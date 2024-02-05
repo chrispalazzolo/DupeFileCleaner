@@ -5,21 +5,64 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DupeFileCleaner"
         mc:Ignorable="d"
-        Title="MainWindow" Height="636" Width="919">
-    <Grid x:Name="frmMain" Visibility="Visible" Margin="0,0,0,-6" Background="#FF212121">
-        <Button x:Name="btnFolderSelect" Content="Select Directory" HorizontalAlignment="Left" Margin="400,38,0,0" VerticalAlignment="Top" Click="btnFolderSelect_Click" Background="#FF212121" Foreground="#FFD6D6D6" RenderTransformOrigin="0.5,0.5" Padding="10,5,10,5" BorderThickness="2,2,2,2" FontSize="14"/>
-        <Button x:Name="btnScan" Content="Scan" HorizontalAlignment="Left" Margin="531,38,0,0" VerticalAlignment="Top" Click="btnScan_Click" Background="#FF212121" Foreground="#FFDADADA" Padding="10,5,10,5" BorderThickness="2,2,2,2" FontSize="14"/>
-        <TextBox x:Name="txtSelectedFolder" HorizontalAlignment="Left" Margin="10,38,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="381" Height="28" Background="#FF444444" Foreground="#FFD4D4D4"/>
-        <TreeView x:Name="tvMatches" Margin="176,133,18,31" Background="#FF444444" Foreground="#FFD6D4D4" FontSize="14"/>
-        <Label x:Name="lbDupsFound" Content="Duplicates Found:" HorizontalAlignment="Left" Margin="12,186,0,0" VerticalAlignment="Top" Width="104" Foreground="#FFD4D4D4"/>
-        <Label x:Name="lblStatus" Content="Waiting on Scan" HorizontalAlignment="Left" Margin="10,92,0,0" VerticalAlignment="Top" Foreground="#FFE2D9D9" Width="153" BorderBrush="#FF565353" Background="#FF4A4545"/>
-        <ProgressBar x:Name="prgbrScan" HorizontalAlignment="Left" Height="28" Margin="176,90,0,0" VerticalAlignment="Top" Width="725" Foreground="#FF1F5228" BorderBrush="#FF707070" Background="#FFBBBBBB" BorderThickness="2,2,2,2"/>
-        <Label x:Name="lblDupFoundCt" HorizontalAlignment="Left" Margin="135,186,0,0" VerticalAlignment="Top" Foreground="#FFD2CFCF" Height="23" Width="28" Content="0"/>
-        <Label x:Name="lblDirScanned" Content="Directories Scanned:" HorizontalAlignment="Left" Margin="12,134,0,0" VerticalAlignment="Top" Foreground="#FFD4D0D0"/>
-        <Label x:Name="lblDirScannedCt" Content="0" HorizontalAlignment="Left" Margin="135,134,0,0" VerticalAlignment="Top" Foreground="#FFC7C3C3" Width="56"/>
-        <Label Content="Files Scanned:" HorizontalAlignment="Left" Margin="12,160,0,0" VerticalAlignment="Top" Foreground="#FFD4D0D0"/>
-        <Label x:Name="lblFilesScannedCt" Content="0" HorizontalAlignment="Left" Margin="135,160,0,0" VerticalAlignment="Top" Foreground="#FFCEC9C9"/>
-        <Label x:Name="lblScanningNow" Content="" Margin="176,92,18,0" VerticalAlignment="Top" Background="{x:Null}" Foreground="#FFE8E5E5"/>
-
+        Title="MainWindow" Height="887" Width="919">
+    <Grid x:Name="frmMain" Visibility="Visible" Background="#FF212121">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBox x:Name="txtSelectedFolder" HorizontalAlignment="Left" Margin="10,38,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="484" Height="29" Background="#FF444444" Foreground="#FFD4D4D4" Padding="10,3,10,3" FontSize="14"/>
+        <Button x:Name="btnFolderSelect" Content="Select Directory" HorizontalAlignment="Left" Margin="507,38,0,0" VerticalAlignment="Top" Click="btnFolderSelect_Click" Background="#FF212121" Foreground="#FFD6D6D6" RenderTransformOrigin="0.5,0.5" Padding="10,3,10,3" BorderThickness="2,2,2,2" FontSize="14"/>
+        <Button x:Name="btnScan" Content="Scan" HorizontalAlignment="Left" Margin="641,38,0,0" VerticalAlignment="Top" Click="btnScan_Click" Background="#FF212121" Foreground="#FFDADADA" Padding="10,3,10,3" BorderThickness="2,2,2,2" FontSize="14" ScrollViewer.CanContentScroll="True"/>
+        <Label x:Name="lblStatus" Content="Waiting on Scan" HorizontalAlignment="Left" Margin="10,90,0,0" VerticalAlignment="Top" Foreground="#FFE2D9D9" Width="204" BorderBrush="#FF565353" Background="#FF4A4545" FontSize="14"/>
+        <Label x:Name="lblDupeFound" Content="Duplicates Found" FontSize="14" Foreground="#FFE4D6D6" Grid.Row="0" Padding="0,0,0,0" Margin="10,138,794,681"/>
+        <TreeView x:Name="tvMatches" Margin="10,160,10,0" Background="#FF444444" Foreground="#FFD6D4D4" FontSize="14" Height="452" VerticalAlignment="Top"/>
+        <Label x:Name="lblScanningNow" Content="" Margin="219,92,18,0" VerticalAlignment="Top" Background="{x:Null}" Foreground="#FFE8E5E5"/>
+        <Label x:Name="lblLogging" Content="Work Log" FontSize="14" Foreground="#FFE4D6D6" Grid.Row="0" Margin="10,630,839,192" Padding="0,0,0,0"/>
+        <ListBox x:Name="lboxLogging" d:ItemsSource="{d:SampleData ItemCount=5}" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="10,651,10,0" Grid.Row="0" Height="104" VerticalAlignment="Top" ScrollViewer.CanContentScroll="True"/>
+        <StatusBar x:Name="sbarStatusBar" VerticalAlignment="Bottom" Background="#FF525658" Height="30" Grid.Row="1">
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+            <StatusBarItem Grid.Column="0">
+                <Label x:Name="lblDirScanned" Content="Directories Scanned:" Foreground="#FFD4D0D0" Padding="0,0,0,0"/>
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="1">
+                <Label x:Name="lblDirScannedCt" Content="0" HorizontalAlignment="Left" Foreground="#FFC7C3C3" Padding="0,0,0,0"/>
+            </StatusBarItem>
+            <Separator Grid.Column="2" />
+            <StatusBarItem Grid.Column="3">
+                <Label Content="Files Scanned:" Foreground="#FFD4D0D0" Padding="0,0,0,0"/>
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="4">
+                <Label x:Name="lblFilesScannedCt" Content="0" Foreground="#FFCEC9C9" Padding="0,0,0,0"/>
+            </StatusBarItem>
+            <Separator Grid.Column="5" />
+            <StatusBarItem Grid.Column="6">
+                <Label x:Name="lbDupsFound" Content="Duplicates Found:" Foreground="#FFD4D4D4" Padding="0,0,0,0"/>
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="7">
+                <Label x:Name="lblDupFoundCt" Foreground="#FFD2CFCF" Content="0" Padding="0,0,0,0"/>
+            </StatusBarItem>
+            <Separator Grid.Column="8" />
+            <StatusBarItem Grid.Column="9" HorizontalAlignment="Right">
+                <ProgressBar x:Name="prgbrScan" Width="400" Height="20" Foreground="#FF1F5228" BorderBrush="#FF707070" Background="#FFBBBBBB"/>
+            </StatusBarItem>
+        </StatusBar>
     </Grid>
 </Window>

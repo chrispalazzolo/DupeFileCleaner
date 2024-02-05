@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace DupeFileCleaner
 {
@@ -35,6 +36,7 @@ namespace DupeFileCleaner
             lblScanningNow.Content = "";
             tvMatches.Items.Clear();
             prgbrScan.Value = 0;
+            lboxLogging.Items.Clear();
         }
         private void btnFolderSelect_Click(object sender, RoutedEventArgs e)
         {
@@ -64,6 +66,7 @@ namespace DupeFileCleaner
         private void Worker_Scan(object sender, DoWorkEventArgs e)
         {
             string path = (string)e.Argument;
+            UpdateLogUI(lboxLogging, "Starting Scan :: " + path);
             GetFileCount(path);
             ScanDirectory(path, sender);
         }
@@ -105,8 +108,9 @@ namespace DupeFileCleaner
             if (path != String.Empty && Directory.Exists(path))
             {
                 dirScannedCt++;
-                this.Dispatcher.Invoke(new Action(() => { lblDirScannedCt.Content = dirScannedCt.ToString(); }));
-                this.Dispatcher.Invoke(new Action(() => { lblScanningNow.Content = path; }));
+                UpdateUI(lblDirScannedCt, dirScannedCt.ToString());
+                UpdateUI(lblScanningNow, path);
+                UpdateLogUI(lboxLogging, "Scanning Folde :: " + path);
 
                 try
                 {
@@ -117,14 +121,15 @@ namespace DupeFileCleaner
                     {
                         foreach (string foundFile in foundFiles)
                         {
-                            this.Dispatcher.Invoke(new Action(() => { lblScanningNow.Content = foundFile; }));
+                            UpdateUI(lblScanningNow, foundFile);
+                            UpdateLogUI(lboxLogging, "Scanning File :: " +  foundFile);
                             string hashKey = GetFileHash(foundFile);
                             
                             if(hashedFiles.ContainsKey(hashKey))
                             {
                                 hashedFiles[hashKey].Add(foundFile);
                                 dupsFoundCt++;
-                                this.Dispatcher.Invoke(new Action(() => { lblDupFoundCt.Content = dupsFoundCt.ToString(); }));
+                                UpdateUI(lblDupFoundCt, dupsFoundCt.ToString());
                             }
                             else
                             {
@@ -132,7 +137,7 @@ namespace DupeFileCleaner
                             }
 
                             filesScannedCt++;
-                            this.Dispatcher.Invoke(new Action(() => { lblFilesScannedCt.Content = filesScannedCt.ToString(); }));
+                            UpdateUI(lblFilesScannedCt, filesScannedCt.ToString());
                             double prcComplete = (double)filesScannedCt / (double)fileCt * 100;
                             (sender as BackgroundWorker).ReportProgress((int)prcComplete);
                         }
@@ -146,14 +151,14 @@ namespace DupeFileCleaner
                         }
                     }
                 }
-                catch(Exception exp)
+                catch(Exception)
                 {
-                    //txtblkStatus.Text += Environment.NewLine + "Access Denied: " + path;
+                    UpdateLogUI(lboxLogging, "Error :: Access Denied: " + path);
                 }
             }
             else
             {
-                MessageBox.Show("Invalid File Path!");
+                UpdateLogUI(lboxLogging, "Error :: Invalid Path: " + path);
             }
         }
 
@@ -174,7 +179,7 @@ namespace DupeFileCleaner
             }
             else
             {
-                MessageBox.Show("GetFileHash(): Invalid File Path!");
+                UpdateLogUI(lboxLogging, "Error :: Can't hash file: " + path);
             }
             
             return hash;
@@ -193,10 +198,17 @@ namespace DupeFileCleaner
             
             return newNode;
         }
-        /*public static void ThreadSafe(Action action)
+
+        private void UpdateUI(ContentControl control, string value)
         {
-            Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Normal, new MethodInvoker(action,  ));
-        }*/
+            Dispatcher.Invoke(new Action(() => { control.Content = value; }));
+        }
+
+        private void UpdateLogUI(ListBox listBox, string value)
+        {
+            Dispatcher.Invoke(new Action(() => { listBox.Items.Add(value); }));
+        }
+        
         private void Worker_ProgressChange(object sender, ProgressChangedEventArgs e)
         {
             prgbrScan.Value = e.ProgressPercentage;
@@ -206,6 +218,7 @@ namespace DupeFileCleaner
         {
             lblStatus.Content = "Scan Complete!";
             lblScanningNow.Content = "";
+            UpdateLogUI(lboxLogging, "Scan Complete :: Directories Scanned: " + dirScannedCt + " | Files Scanned: " + filesScannedCt + " | Duplicates Found: " + dupsFoundCt);
             FillTreeView();
         }
 

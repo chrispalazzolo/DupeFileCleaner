@@ -5,21 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DupeFileCleaner"
         mc:Ignorable="d"
-        Title="MainWindow" Height="887" Width="919">
+        Title="Duplicate File Finder" Height="887" Width="1024">
     <Grid x:Name="frmMain" Visibility="Visible" Background="#FF212121">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBox x:Name="txtSelectedFolder" HorizontalAlignment="Left" Margin="10,38,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="484" Height="29" Background="#FF444444" Foreground="#FFD4D4D4" Padding="10,3,10,3" FontSize="14"/>
-        <Button x:Name="btnFolderSelect" Content="Select Directory" HorizontalAlignment="Left" Margin="507,38,0,0" VerticalAlignment="Top" Click="btnFolderSelect_Click" Background="#FF212121" Foreground="#FFD6D6D6" RenderTransformOrigin="0.5,0.5" Padding="10,3,10,3" BorderThickness="2,2,2,2" FontSize="14"/>
-        <Button x:Name="btnScan" Content="Scan" HorizontalAlignment="Left" Margin="641,38,0,0" VerticalAlignment="Top" Click="btnScan_Click" Background="#FF212121" Foreground="#FFDADADA" Padding="10,3,10,3" BorderThickness="2,2,2,2" FontSize="14" ScrollViewer.CanContentScroll="True"/>
-        <Label x:Name="lblStatus" Content="Waiting on Scan" HorizontalAlignment="Left" Margin="10,90,0,0" VerticalAlignment="Top" Foreground="#FFE2D9D9" Width="204" BorderBrush="#FF565353" Background="#FF4A4545" FontSize="14"/>
-        <Label x:Name="lblDupeFound" Content="Duplicates Found" FontSize="14" Foreground="#FFE4D6D6" Grid.Row="0" Padding="0,0,0,0" Margin="10,138,794,681"/>
-        <TreeView x:Name="tvMatches" Margin="10,160,10,0" Background="#FF444444" Foreground="#FFD6D4D4" FontSize="14" Height="452" VerticalAlignment="Top"/>
-        <Label x:Name="lblScanningNow" Content="" Margin="219,92,18,0" VerticalAlignment="Top" Background="{x:Null}" Foreground="#FFE8E5E5"/>
-        <Label x:Name="lblLogging" Content="Work Log" FontSize="14" Foreground="#FFE4D6D6" Grid.Row="0" Margin="10,630,839,192" Padding="0,0,0,0"/>
-        <ListBox x:Name="lboxLogging" d:ItemsSource="{d:SampleData ItemCount=5}" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="10,651,10,0" Grid.Row="0" Height="104" VerticalAlignment="Top" ScrollViewer.CanContentScroll="True"/>
+        <TextBox x:Name="txtSelectedFolder" HorizontalAlignment="Left" Margin="50,38,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="484" Height="29" Background="#FF444444" Foreground="#FFD4D4D4" Padding="10,3,10,3"/>
+        <Button x:Name="btnFolderSelect" Content="Select Directory" HorizontalAlignment="Left" Margin="547,38,0,0" VerticalAlignment="Top" Click="btnFolderSelect_Click" Background="#FF212121" Foreground="#FFD6D6D6" RenderTransformOrigin="0.5,0.5" Padding="10,3,10,3" BorderThickness="2,2,2,2"/>
+        <Button x:Name="btnScan" Content="Scan" HorizontalAlignment="Left" Margin="681,38,0,0" VerticalAlignment="Top" Click="btnScan_Click" Background="#FF212121" Foreground="#FFDADADA" Padding="10,3,10,3" BorderThickness="2,2,2,2" ScrollViewer.CanContentScroll="True"/>
+        <Label x:Name="lblStatus" Content="Waiting on Scan" HorizontalAlignment="Left" Margin="50,91,0,0" VerticalAlignment="Top" Foreground="#FFE2D9D9" Width="204" BorderBrush="#FF565353" Background="#FF4A4545"/>
+        <Label x:Name="lblDupeFound" Content="Duplicates Found" Foreground="#FFE4D6D6" Padding="0,0,0,0" Margin="50,138,0,0" HorizontalAlignment="Left" Width="220" Height="22" VerticalAlignment="Top"/>
+        <TreeView x:Name="tvMatches" Margin="50,160,50,0" Background="#FF444444" Foreground="#FFD6D4D4" Height="452" VerticalAlignment="Top"/>
+        <Label x:Name="lblScanningNow" Content="" Margin="266,92,50,0" VerticalAlignment="Top" Background="{x:Null}" Foreground="#FFE8E5E5"/>
+        <Label x:Name="lblLogging" Content="Work Log" Foreground="#FFE4D6D6" Grid.Row="0" Margin="50,635,0,0" Padding="0,0,0,0" Height="19" VerticalAlignment="Top" HorizontalAlignment="Left" Width="175"/>
+        <ListBox x:Name="lboxLogging" d:ItemsSource="{d:SampleData ItemCount=5}" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="50,654,50,0" Grid.Row="0" Height="72" VerticalAlignment="Top" ScrollViewer.CanContentScroll="True"/>
         <StatusBar x:Name="sbarStatusBar" VerticalAlignment="Bottom" Background="#FF525658" Height="30" Grid.Row="1">
             <StatusBar.ItemsPanel>
                 <ItemsPanelTemplate>

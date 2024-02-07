@@ -11,13 +11,17 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBox x:Name="txtSelectedFolder" HorizontalAlignment="Left" Margin="50,38,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="484" Height="29" Background="#FF444444" Foreground="#FFD4D4D4" Padding="10,3,10,3"/>
+        <TextBox x:Name="txtSelectedFolder" HorizontalAlignment="Left" Margin="50,38,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="484" Height="26" Background="#FF444444" Foreground="#FFD4D4D4" Padding="10,3,10,3"/>
         <Button x:Name="btnFolderSelect" Content="Select Directory" HorizontalAlignment="Left" Margin="547,38,0,0" VerticalAlignment="Top" Click="btnFolderSelect_Click" Background="#FF212121" Foreground="#FFD6D6D6" RenderTransformOrigin="0.5,0.5" Padding="10,3,10,3" BorderThickness="2,2,2,2"/>
-        <Button x:Name="btnScan" Content="Scan" HorizontalAlignment="Left" Margin="681,38,0,0" VerticalAlignment="Top" Click="btnScan_Click" Background="#FF212121" Foreground="#FFDADADA" Padding="10,3,10,3" BorderThickness="2,2,2,2" ScrollViewer.CanContentScroll="True"/>
-        <Label x:Name="lblStatus" Content="Waiting on Scan" HorizontalAlignment="Left" Margin="50,91,0,0" VerticalAlignment="Top" Foreground="#FFE2D9D9" Width="204" BorderBrush="#FF565353" Background="#FF4A4545"/>
+        <Button x:Name="btnScan" HorizontalAlignment="Left" Margin="673,38,0,0" VerticalAlignment="Top" Click="btnScan_Click" Background="#FF212121" Foreground="#FFDADADA" Padding="10,3,10,3" BorderThickness="2,2,2,2" ScrollViewer.CanContentScroll="True" Height="26">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="Images/green-play.png" Width="15" Height="15" />
+                <TextBlock Padding="5,0,0,0">Scan</TextBlock>
+            </StackPanel>
+        </Button>
         <Label x:Name="lblDupeFound" Content="Duplicates Found" Foreground="#FFE4D6D6" Padding="0,0,0,0" Margin="50,138,0,0" HorizontalAlignment="Left" Width="220" Height="22" VerticalAlignment="Top"/>
         <TreeView x:Name="tvMatches" Margin="50,160,50,0" Background="#FF444444" Foreground="#FFD6D4D4" Height="452" VerticalAlignment="Top"/>
-        <Label x:Name="lblScanningNow" Content="" Margin="266,92,50,0" VerticalAlignment="Top" Background="{x:Null}" Foreground="#FFE8E5E5"/>
+        <Label x:Name="lblScanningNow" Content="Choose a folder and press scan to start......" Margin="50,92,50,0" VerticalAlignment="Top" Background="{x:Null}" Foreground="#FFE8E5E5" BorderThickness="1,1,1,1" BorderBrush="#FF4C4C4C"/>
         <Label x:Name="lblLogging" Content="Work Log" Foreground="#FFE4D6D6" Grid.Row="0" Margin="50,635,0,0" Padding="0,0,0,0" Height="19" VerticalAlignment="Top" HorizontalAlignment="Left" Width="175"/>
         <ListBox x:Name="lboxLogging" d:ItemsSource="{d:SampleData ItemCount=5}" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="50,654,50,0" Grid.Row="0" Height="72" VerticalAlignment="Top" ScrollViewer.CanContentScroll="True"/>
         <StatusBar x:Name="sbarStatusBar" VerticalAlignment="Bottom" Background="#FF525658" Height="30" Grid.Row="1">
@@ -64,5 +68,6 @@
                 <ProgressBar x:Name="prgbrScan" Width="400" Height="20" Foreground="#FF1F5228" BorderBrush="#FF707070" Background="#FFBBBBBB"/>
             </StatusBarItem>
         </StatusBar>
+        <Button x:Name="btnSaveLog" Content="Save Log" Margin="922,731,0,0" Background="#FF212121" Foreground="#FFD6D6D6" Padding="10,3,10,3" BorderThickness="2,2,2,2" Click="btnSaveLog_Click" HorizontalAlignment="Left" Width="52" Height="27" VerticalAlignment="Top"/>
     </Grid>
 </Window>

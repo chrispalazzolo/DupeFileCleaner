@@ -1,9 +1,11 @@
-﻿using System.ComponentModel;
+﻿using Microsoft.Win32;
+using System.ComponentModel;
 using System.IO;
 using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace DupeFileCleaner
@@ -37,6 +39,7 @@ namespace DupeFileCleaner
             tvMatches.Items.Clear();
             prgbrScan.Value = 0;
             lboxLogging.Items.Clear();
+            lblScanningNow.Content = "Choose a folder and press scan to start...";
         }
         private void btnFolderSelect_Click(object sender, RoutedEventArgs e)
         {
@@ -52,7 +55,7 @@ namespace DupeFileCleaner
         private void btnScan_Click(object sender, RoutedEventArgs e)
         {
             Initialize();
-            lblStatus.Content = "Scanning:";
+            lblScanningNow.Content = "Starting Scan...";
 
             BackgroundWorker backgroundWorker = new BackgroundWorker();
             backgroundWorker.WorkerReportsProgress = true;
@@ -109,8 +112,8 @@ namespace DupeFileCleaner
             {
                 dirScannedCt++;
                 UpdateUI(lblDirScannedCt, dirScannedCt.ToString());
-                UpdateUI(lblScanningNow, path);
-                UpdateLogUI(lboxLogging, "Scanning Folde :: " + path);
+                UpdateUI(lblScanningNow, "Scanning Folder: " + path);
+                UpdateLogUI(lboxLogging, "Scanning Folder :: " + path);
 
                 try
                 {
@@ -121,7 +124,7 @@ namespace DupeFileCleaner
                     {
                         foreach (string foundFile in foundFiles)
                         {
-                            UpdateUI(lblScanningNow, foundFile);
+                            UpdateUI(lblScanningNow, "Scanning File: " + foundFile);
                             UpdateLogUI(lboxLogging, "Scanning File :: " +  foundFile);
                             string hashKey = GetFileHash(foundFile);
                             
@@ -216,8 +219,7 @@ namespace DupeFileCleaner
 
         private void ScanComplete(object sender, RunWorkerCompletedEventArgs e)
         {
-            lblStatus.Content = "Scan Complete!";
-            lblScanningNow.Content = "";
+            lblScanningNow.Content = "Scan Complete!";
             UpdateLogUI(lboxLogging, "Scan Complete :: Directories Scanned: " + dirScannedCt + " | Files Scanned: " + filesScannedCt + " | Duplicates Found: " + dupsFoundCt);
             FillTreeView();
         }
@@ -243,6 +245,24 @@ namespace DupeFileCleaner
                         tvMatches.Items.Add(parentNode);
                     } 
                 }
+            }
+        }
+
+        private void btnSaveLog_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveFile = new SaveFileDialog();
+            saveFile.InitialDirectory = txtSelectedFolder.Text;
+
+            if(saveFile.ShowDialog() == true)
+            {
+                string[] logItems = new string[lboxLogging.Items.Count];
+
+                for(int i = 0; i < lboxLogging.Items.Count; i++)
+                {
+                    logItems[i] = lboxLogging.Items[i].ToString();
+                }
+
+                File.WriteAllLines(saveFile.FileName, logItems.ToArray());
             }
         }
     }

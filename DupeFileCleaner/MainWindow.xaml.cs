@@ -43,7 +43,7 @@ namespace DupeFileCleaner
         }
         private void btnFolderSelect_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new Microsoft.Win32.OpenFolderDialog();
+            var dialog = new OpenFolderDialog();
             bool? result = dialog.ShowDialog();
 
             if (result == true)
@@ -196,7 +196,9 @@ namespace DupeFileCleaner
             {
                 newNode.Name = name;
                 newNode.Header = header;
-                newNode.Foreground = Brushes.White;
+                /*Color color = new Color();
+                color. = "#FFBDBDBD";
+                newNode.Foreground = new SolidColorBrush(new Color("#FFBDBDBD"));*/
             }
             
             return newNode;

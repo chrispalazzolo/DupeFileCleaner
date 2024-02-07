@@ -250,19 +250,22 @@ namespace DupeFileCleaner
 
         private void btnSaveLog_Click(object sender, RoutedEventArgs e)
         {
-            SaveFileDialog saveFile = new SaveFileDialog();
-            saveFile.InitialDirectory = txtSelectedFolder.Text;
-
-            if(saveFile.ShowDialog() == true)
+            if(lboxLogging.Items.Count > 0)
             {
-                string[] logItems = new string[lboxLogging.Items.Count];
+                SaveFileDialog saveFile = new SaveFileDialog();
+                saveFile.InitialDirectory = txtSelectedFolder.Text;
 
-                for(int i = 0; i < lboxLogging.Items.Count; i++)
+                if (saveFile.ShowDialog() == true)
                 {
-                    logItems[i] = lboxLogging.Items[i].ToString();
-                }
+                    string[] logItems = new string[lboxLogging.Items.Count];
 
-                File.WriteAllLines(saveFile.FileName, logItems.ToArray());
+                    for (int i = 0; i < lboxLogging.Items.Count; i++)
+                    {
+                        logItems[i] = lboxLogging.Items[i].ToString();
+                    }
+
+                    File.WriteAllLines(saveFile.FileName, logItems.ToArray());
+                }
             }
         }
     }

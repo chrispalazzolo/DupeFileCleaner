@@ -1,12 +1,11 @@
 ﻿using Microsoft.Win32;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using System.Windows.Threading;
-using System.Collections.ObjectModel;
 
 namespace DupeFileCleaner
 {
@@ -26,6 +25,8 @@ namespace DupeFileCleaner
         {
             InitializeComponent();
             txtSelectedFolder.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            miSaveDups.IsEnabled = false;
+            miSaveLog.IsEnabled = false;
         }
 
         private void Initialize()
@@ -40,7 +41,8 @@ namespace DupeFileCleaner
             deleteFiles.Clear();
             checkedBoxes = 0;
             lboxLogging.Items.Clear();
-            btnSaveLog.IsEnabled = false;
+            miSaveLog.IsEnabled = false;
+            miSaveDups.IsEnabled=false;
             fileCt = 0;
             dirScannedCt = 0;
             lblDirScannedCt.Content = 0;
@@ -253,7 +255,8 @@ namespace DupeFileCleaner
                 UpdateLogUI(lboxLogging, "Scan Complete :: Directories Scanned: " + dirScannedCt + " | Files Scanned: " + filesScannedCt + " | Duplicates Found: " + dupsFoundCt);
                 btnCancelScan.IsEnabled = false;
                 btnScan.IsEnabled = true;
-                btnSaveLog.IsEnabled = true;
+                miSaveDups.IsEnabled = true;
+                miSaveLog.IsEnabled = true;
             }
             else
             {
@@ -311,7 +314,44 @@ namespace DupeFileCleaner
                 btnDeleteFiles.IsEnabled = false;
             }
         }
-        private void btnSaveLog_Click(object sender, RoutedEventArgs e)
+
+        private void SaveDups_Click(object sender, RoutedEventArgs e)
+        {
+            if (hashedFiles.Count > 0)
+            {
+                SaveFileDialog saveFile = new SaveFileDialog();
+                saveFile.InitialDirectory = txtSelectedFolder.Text;
+                saveFile.Filter = "Text file (*.txt)|*.txt";
+                saveFile.DefaultExt = ".txt";
+
+                if (saveFile.ShowDialog() == true)
+                {
+                    List<string> lines = new List<string>();
+                    lines.Add("DuplicateFileCleaner.exe - Duplicates Found List");
+                    lines.Add("Scanned Folder: " + txtSelectedFolder.Text);
+                    lines.Add("Duplicates Found: " + dupsFoundCt);
+                    lines.Add("Date of Scan: " + DateTime.Now.ToString());
+
+                    foreach (KeyValuePair<string, List<string>> kvp in hashedFiles)
+                    {
+                        if(kvp.Value.Count > 1)
+                        {
+                            lines.Add("-------------------------------------------------------------------------------------");
+                            lines.Add("Files with hash: " + kvp.Key);
+
+                            foreach (string line in kvp.Value)
+                            {
+                                lines.Add(line);
+                            }
+                        }
+                    }
+
+                    File.WriteAllLines(saveFile.FileName, lines.ToArray());
+                }
+            }
+        }
+
+        private void SaveLog_Click(object sender, RoutedEventArgs e)
         {
             if(lboxLogging.Items.Count > 0)
             {
@@ -322,11 +362,15 @@ namespace DupeFileCleaner
 
                 if (saveFile.ShowDialog() == true)
                 {
-                    string[] logItems = new string[lboxLogging.Items.Count];
+                    List<string> logItems = new List<string>();
+                    logItems.Add("DuplicateFileCleaner.exe - Work Log");
+                    logItems.Add("Scanned Folder: " + txtSelectedFolder.Text);
+                    logItems.Add("Date of Scan: " + DateTime.Now.ToString());
+                    logItems.Add("-------------------------------------------------------------------------------------------");
 
                     for (int i = 0; i < lboxLogging.Items.Count; i++)
                     {
-                        logItems[i] = lboxLogging.Items[i].ToString();
+                        logItems.Add(lboxLogging.Items[i].ToString());
                     }
 
                     File.WriteAllLines(saveFile.FileName, logItems.ToArray());
@@ -376,6 +420,12 @@ namespace DupeFileCleaner
             {
                 return;
             }
+        }
+
+        private void MenuItem_Exit(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Application.Current.Shutdown();
+            return;
         }
     }
 }

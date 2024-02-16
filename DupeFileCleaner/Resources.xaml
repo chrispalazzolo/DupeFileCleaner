@@ -1,4 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <BitmapImage x:Key="ScanIcon" UriSource="Images/green-play.png" />
     <BitmapImage x:Key="CancelIcon" UriSource="Images/red-cancel.png" />
+    <BitmapImage x:Key="MenuIcon" UriSource="Images/menu-icon.png" />
 </ResourceDictionary>
